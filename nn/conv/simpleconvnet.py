@@ -1,25 +1,20 @@
-from os import name
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras import layers
 from tensorflow.keras.layers import Input, Dense, Activation, ZeroPadding2D, BatchNormalization, Flatten, Conv2D
 from tensorflow.keras.layers import MaxPooling2D, Dropout
 from tensorflow.keras.models import Model
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.utils import layer_utils
-from tensorflow.keras.utils import get_file, model_to_dot, plot_model
-from tensorflow.keras.applications.imagenet_utils import preprocess_input
 import tensorflow.keras.backend as K
 
 class SimpleNet:
     @staticmethod
-    def create(width, height, depth, classes):
-        inputShape = (width, height, depth)
+    def create(width, height, channel, classes):
+        inputShape = (width, height, channel)
 
         # if image data format is 'channels_first',
         # then update the input shape
         if K.image_data_format() == "channels_first":
-            inputShape = (depth, width, height)
+            inputShape = (channel, width, height)
         
         X_input = Input(inputShape)
 
@@ -62,9 +57,9 @@ class SimpleNet:
 
         # FLATTEN X + FULLY_CONNECTED
         X = Flatten()(X)
-        X = Dense(40, activation = 'relu', name = 'fc6')(X)
-        X = Dense(40, activation = 'relu', name = 'fc7')
-        X = Dense(classes, activation = 'softmax', name = 'fc8')(X)
+        X = Dense(40, activation = 'relu', name = 'fc1')(X)
+        X = Dense(40, activation = 'relu', name = 'fc2')(X)
+        X = Dense(classes, activation = 'softmax', name = 'predictions')(X)
 
         # Create Keras model instance
         model = Model(inputs = X_input, outputs = X, name = 'SimpleModel')
