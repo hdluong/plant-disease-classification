@@ -121,7 +121,7 @@ if __name__ == '__main__':
     #method = METHODS[args['method'].upper()] 
     numberOfElement = int(args['number'])
     if is_square(numberOfElement):
-        row = int(math.sqrt(numberOfElement));
+        row = int(math.sqrt(numberOfElement))
         smp = ShowMatrixPic(width=100, height=100, row=row, column=row, atuoTile=True)
     elif numberOfElement < 20:
         if numberOfElement > 10:
