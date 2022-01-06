@@ -2,6 +2,8 @@ import os
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 import argparse
+import numpy as np
+import matplotlib as plt
 
 from data_explore import DataExplore
 
@@ -11,8 +13,8 @@ DATASETS_PATH = BASE_PATH + '/datasets/train/Tomato___Early_blight/*.jpg'
 def encoder(datasets_path):
     de = DataExplore(datasets_path, 10)
     onehot = OneHotEncoder(sparse=False)
-    df_train = de.showClass(True)
-    onehot_encoded = onehot.fit_transform(df_train[["Class"]])
+    df_class = de.getClass(True)
+    onehot_encoded = onehot.fit_transform(df_class[["Class"]])
     for o in onehot_encoded:
         print(o)
     return onehot, onehot_encoded

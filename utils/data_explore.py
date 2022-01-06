@@ -22,7 +22,7 @@ class DataExplore():
         if self.num_show > 1000:
             self.num_show = 1000
 
-    def showClass(self, isPrint=True):
+    def getClass(self, isPrint=True):
         df = pd.DataFrame(columns=["Class","Train","Valid"])
         i = 1
         for cl in class_train_list:
@@ -67,13 +67,13 @@ class DataExplore():
         elif number_of_element == 1000:
             smp = ShowMatrixPic(width=40, height=40, row=25,column=40, atuoTile=True)
 
-        imgListOne = glob.glob(self.datasets_path)
+        imgListOne = glob.glob(self.datasets_path + '/*.jpg')
         numpy_horizontal = smp.showPic(np.random.choice(imgListOne, number_of_element))
         cv2.imshow('img', numpy_horizontal)
         cv2.waitKey(0)
 
     def analysisData(self, classNm):
-        imgList = glob.glob(BASE_PATH + '/datasets/train/' + classNm + '/*.jpg')
+        imgList = glob.glob(self.datasets_path + '/*.jpg')
         imgSizeList = []
         for img in imgList:
             im = cv2.imread(img)
@@ -188,22 +188,35 @@ if __name__ == '__main__':
     ap.add_argument('-m', '--method', choices=['show_data', 'show_class', 'analysis_data'], help='Name of method to use.', default='show')
     ap.add_argument('-n', '--number', help='number of images to display.')
     ap.add_argument('-c', '--class', help='class name')
+    ap.add_argument('-p', '--path', help='datasets path')
 
     # set up command line arguments conveniently
     args = vars(ap.parse_args())
     method = args['method'].upper()
     classNm = args['class']
+    path = args['path']
+
+    if path:
+        if not os.path.exists(path):
+            print(path, ': does not exist') 
+            exit()
+        elif not os.path.isdir(path):
+            print(path, ': is not a directory') 
+            exit()
+    else:
+        print('Please enter your datasets path') 
+        exit()
 
     if args['number'] == None:
         number_of_element =  0
     else:
         number_of_element =  int(args['number'])
 
-    de = DataExplore(DATASETS_PATH, number_of_element)
+    de = DataExplore(path, number_of_element)
 
     if method == "SHOW_DATA":
         de.showData()
     elif method == "SHOW_CLASS":
-        de.showClass()
+        de.getClass()
     elif method == "ANALYSIS_DATA":
         de.analysisData(classNm)
