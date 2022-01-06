@@ -5,7 +5,6 @@ import argparse
 import pandas as pd
 import os
 import math
-import tensorflow as tf
 
 BASE_PATH = os.getcwd()
 DATASETS_PATH = BASE_PATH + '/datasets/train/Tomato___Early_blight/*.jpg'
@@ -23,19 +22,20 @@ class DataExplore():
         if self.num_show > 1000:
             self.num_show = 1000
 
-    def showClass(self):
+    def showClass(self, isPrint=True):
         df = pd.DataFrame(columns=["Class","Train","Valid"])
         i = 1
         for cl in class_train_list:
-            train_count = len(os.listdir(BASE_PATH + '/datasets/train/' + cl))
+            train_count = len(os.listdir(self.datasets_path + cl))
             if class_valid_list.__contains__(cl):
-                valid_count = len(os.listdir(BASE_PATH + '/datasets/valid/' + cl))
+                valid_count = len(os.listdir(self.datasets_path + cl))
             else:
                 valid_count = 0
             df2 = pd.DataFrame([[cl, train_count, valid_count]], columns=["Class","Train","Valid"], index=[i])
             df = df.append(df2)
             i=i+1
-        print(df)
+        if (isPrint): print(df)
+        return df
 
     def showData(self):
         number_of_element = self.num_show
@@ -80,18 +80,6 @@ class DataExplore():
             if (not imgSizeList.__contains__(im.shape)):
                 imgSizeList.append(im.shape)
         print(imgSizeList)
-
-        # Sets up a timestamped log directory.
-        logdir = "logs/train_data/"
-        # Creates a file writer for the log directory.
-        file_writer = tf.summary.create_file_writer(logdir)
-
-        # Using the file writer, log the reshaped image.
-        with file_writer.as_default():
-            # tf.summary.image("Training data", img, step=0)
-            image1 = tf.random.uniform(shape=[8, 8, 1])
-            image2 = tf.random.uniform(shape=[8, 8, 1])
-            tf.summary.image("grayscale_noise", [image1, image2], step=0)
 
 class ShowMatrixPic():
     def __init__(self, row=0, column=0, atuoTile=False, width=200, height=200, text='None'):
