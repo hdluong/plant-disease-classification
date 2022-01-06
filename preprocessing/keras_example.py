@@ -1,4 +1,5 @@
 import numpy as np
+import argparse
 import os
 import PIL
 import PIL.Image
@@ -14,12 +15,16 @@ from tensorflow import keras
 #                                   fname='flower_photos',
 #                                   untar=True)
 
-data_dir = "../../New Plant Diseases Dataset(Augmented)/New Plant Diseases Dataset(Augmented)/train";
+#data_dir = "../../New Plant Diseases Dataset(Augmented)/New Plant Diseases Dataset(Augmented)/train";
+ap = argparse.ArgumentParser()
+ap.add_argument("-d", "--dataset", required = True,
+	help = "Path to the input dataset")
+args = vars(ap.parse_args())
 
-data_dir = pathlib.Path(data_dir)
+data_dir = pathlib.Path(args["dataset"])
 print(data_dir)
 
-batch_size = 64
+batch_size = 32
 img_height = 180
 img_width = 180
 
@@ -49,10 +54,12 @@ class_names = np.array(sorted([item.name for item in data_dir.glob('*') if item.
 print("+Class name info: ",class_names)
 
 class_names = dataset.class_names
-plt.figure(figsize=(10, 10))
+plt.figure(figsize=(20, 20))
 for images, labels in dataset.take(1):
-    for i in range(9):
-        ax = plt.subplot(3, 3, i + 1)
+    for i in range(30):
+        ax = plt.subplot(5, 6, i + 1)
         plt.imshow(images[i].numpy().astype("uint8"))
         plt.title(class_names[labels[i]])
         plt.axis("off")
+
+plt.show()
