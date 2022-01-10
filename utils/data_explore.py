@@ -5,18 +5,19 @@ import argparse
 import pandas as pd
 import os
 import math
+import matplotlib.pyplot as plt
+from random import randint
 
 BASE_PATH = os.getcwd()
-DATASETS_PATH = BASE_PATH + '/datasets/train/Tomato___Early_blight/*.jpg'
-
-class_train_list = os.listdir(BASE_PATH + '/datasets/train')
-class_valid_list = os.listdir(BASE_PATH + '/datasets/valid')
+DATASETS_PATH = BASE_PATH + '/datasets'
 
 class DataExplore():
     def __init__(self, datasets_path=DATASETS_PATH, num_show=10):
         super(DataExplore, self).__init__()
         self.datasets_path = datasets_path
         self.num_show = num_show
+        self.class_train_list = os.listdir(datasets_path + '/train')
+        self.class_valid_list = os.listdir(datasets_path + '/valid')
         if self.num_show <= 0:
             self.num_show = 10
         if self.num_show > 1000:
@@ -25,10 +26,10 @@ class DataExplore():
     def getClass(self, isPrint=True):
         df = pd.DataFrame(columns=["Class","Train","Valid"])
         i = 1
-        for cl in class_train_list:
-            train_count = len(os.listdir(self.datasets_path + cl))
-            if class_valid_list.__contains__(cl):
-                valid_count = len(os.listdir(self.datasets_path + cl))
+        for cl in self.class_train_list:
+            train_count = len(os.listdir(self.datasets_path + '/train/' + cl))
+            if self.class_valid_list.__contains__(cl):
+                valid_count = len(os.listdir(self.datasets_path + '/valid/' + cl))
             else:
                 valid_count = 0
             df2 = pd.DataFrame([[cl, train_count, valid_count]], columns=["Class","Train","Valid"], index=[i])
@@ -36,151 +37,62 @@ class DataExplore():
             i=i+1
         if (isPrint): print(df)
         return df
-
+    
     def showData(self):
-        number_of_element = self.num_show
-        if is_square(number_of_element):
-            row = int(math.sqrt(number_of_element))
-            if number_of_element < 30:
-                smp = ShowMatrixPic(width=150, height=150, row=row,column=row, atuoTile=True)
-            else:
-                smp = ShowMatrixPic(width=100, height=100, row=row,column=row, atuoTile=True)
-        elif number_of_element < 20:
-            if number_of_element > 10:
-                number_of_element = 10
-            if number_of_element % 2 == 0:
-                smp = ShowMatrixPic(width=150, height=150, row=2, column=(int(number_of_element/2)), atuoTile=True)
-            else:
-                smp = ShowMatrixPic(width=150, height=150, row=1,column=number_of_element, atuoTile=True)
-        elif number_of_element < 30:
-            smp = ShowMatrixPic(width=100, height=100, row=4,column=5, atuoTile=True)
-        elif number_of_element < 40:
-            smp = ShowMatrixPic(width=100, height=100, row=5,column=6, atuoTile=True)
-        elif number_of_element < 50:
-            smp = ShowMatrixPic(width=100, height=100, row=5,column=8, atuoTile=True)
-        elif number_of_element < 100:
-            smp = ShowMatrixPic(width=100, height=100, row=5,column=10, atuoTile=True)
-        elif number_of_element < 500:
-            smp = ShowMatrixPic(width=100, height=100, row=10,column=10, atuoTile=True)
-        elif number_of_element < 1000:
-            smp = ShowMatrixPic(width=50, height=50, row=20,column=25, atuoTile=True)
-        elif number_of_element == 1000:
-            smp = ShowMatrixPic(width=40, height=40, row=25,column=40, atuoTile=True)
+        train_images = []
+        train_labels = []
+        test_images = []
+        test_labels = []
 
-        imgListOne = glob.glob(self.datasets_path + '/*.jpg')
-        numpy_horizontal = smp.showPic(np.random.choice(imgListOne, number_of_element))
-        cv2.imshow('img', numpy_horizontal)
-        cv2.waitKey(0)
-
-    def analysisData(self, classNm):
-        imgList = glob.glob(self.datasets_path + '/*.jpg')
-        imgSizeList = []
-        for img in imgList:
-            im = cv2.imread(img)
-            if (not imgSizeList.__contains__(im.shape)):
-                imgSizeList.append(im.shape)
-        print(imgSizeList)
-
-class ShowMatrixPic():
-    def __init__(self, row=0, column=0, atuoTile=False, width=200, height=200, text='None'):
-        super(ShowMatrixPic, self).__init__()
-        self.row = row
-        self.column = column
-        self.atuoTile = atuoTile
-        self.width = width
-        self.height = height
-        self.text = text
-        if self.row < 0:
-            self.row = 0
-        if self.column < 0:
-            self.column = 0
-
-        # user32 = ctypes.windll.user32
-        # screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
-        # print(screensize)
-        #
-
-    def __rawAndColumn(self, imgList):
-        r = c = 0
-        resSubtraction = 1
-        if self.column == 0 and self.row == 0:
-            lenList = len(imgList)
-            k = round(math.sqrt(lenList))
-            if k > 5:
-                r = 5
-                if lenList % r == 0:
-                    c = lenList // k
-                else:
-                    num2 = lenList // r
-                    if num2 > r:
-                        c = k + (num2 - r)
-                    else:
-                        c = k + num2
-
-            else:
-                r = k
-                if lenList % r == 0:
-                    c = lenList // r
-                else:
-                    u = r ** 2
-                    num2 = lenList % r
-                    if u < lenList:
-                        if num2 < r:
-                            c = r + 1
-                        else:
-                            c = r + num2
-                    else:
-                        c = r
-        elif self.column == 0 and self.row != 0:
-            lenList = len(imgList)
-            r = self.row
-            c = math.ceil(lenList / self.row)
-        elif self.column != 0 and self.row == 0:
-            lenList = len(imgList)
-            c = self.column
-            r = math.ceil(lenList / self.column)
-        else:
-            r = self.row
-            c = self.column
-
-        return r, c
-
-    def showPic(self, imgList):
-
-        r, c = self.__rawAndColumn(imgList)
-
-        image = []
-        l = len(imgList)
-        print(l)
-        for i in range(l):
-            img = cv2.imread(imgList[i])
-            img = cv2.resize(img, (self.width, self.height),
-                             interpolation=cv2.INTER_AREA)
-            image.append(img)
-        if not self.atuoTile:
-            lenOfimg = len(imgList)
-            tableNum = r * c
-            emptyImg = np.zeros((self.height, self.width, 3), np.uint8)
-            h, w = emptyImg.shape[:2]
-            textSize = round(w * 0.005, 2)
-            textThick = round(w / 100)
-            cv2.putText(emptyImg, self.text, ((w // 4), (h // 2)), cv2.FONT_HERSHEY_COMPLEX,
-                        textSize, (255, 255, 255), textThick)
-            if (tableNum - lenOfimg) > 0:
-
-                for o in range(tableNum - lenOfimg):
-                    image.append(emptyImg)
-
-        numpy_vertical = []
-
-        for n in range(c):
-            numpy_vertical.append(np.vstack((image[n * r:r + (n * r)])))
-        numpy_horizontal = np.hstack(numpy_vertical)
-        return numpy_horizontal
-
-def is_square(n):
-    sqrt = math.sqrt(n)
-    return (sqrt - int(sqrt)) == 0
+        for train_test_folder in os.listdir(self.datasets_path):
+            # if train_test_folder == 'train':
+            #     train_path = os.path.join(dataset_path, train_test_folder)
+            #     for disease_folder in os.listdir(train_path):
+            #         train_labels.append(disease_folder)
+            #         disease_path = os.path.join(train_path, disease_folder)
+            #         for file in os.listdir(disease_path):
+            #             if file.endswith('jpg') or file.endswith('JPG'):
+            #                 img_path = os.path.join(disease_path, file)
+            #                 img = cv2.imread(img_path)
+            #                 r, g, b = img[:, :, 0]/255, img[:, :, 1]/255, img[:, :, 2]/255
+            #                 img = np.dstack((r, g, b))
+            #                 train_images.append(img)
+      
+            if train_test_folder == 'valid':
+                test_path = os.path.join(self.datasets_path, train_test_folder)
+                for disease_folder in os.listdir(test_path):
+                    disease_path = os.path.join(test_path, disease_folder)
+                    i = 0
+                    for file in os.listdir(disease_path):
+                        if i < 20 and (file.endswith('jpg') or file.endswith('JPG')):
+                            img_path = os.path.join(disease_path, file)
+                            img = cv2.imread(img_path)
+                            r, g, b = img[:, :, 0]/255, img[:, :, 1]/255, img[:, :, 2]/255
+                            img = np.dstack((r, g, b))
+                            test_images.append(img)
+                            test_labels.append(disease_folder)
+                            i=i+1
+                    
+        train_images = np.array(train_images)
+        train_labels = np.array(train_labels)
+        test_images = np.array(test_images)
+        test_labels = np.array(test_labels)
+        print('Shape of the stacked train images:', train_images.shape)
+        print('Shape of the train labels:', train_labels.shape)
+        print('Shape of the stacked test images:', test_images.shape)
+        print('Shape of the test_labels:', test_labels.shape)
+        unique_labels = np.unique(test_labels)
+        print(unique_labels)
+        row = 5
+        col = 4
+        fig, axes = plt.subplots(row, col, figsize=(14, 14))
+        for i in range(row):
+            for j in range(col):
+                c = randint(0, len(test_images) - 1)
+                axes[i][j].imshow(test_images[c])
+                axes[i][j].set_title(test_labels[c])
+        plt.tight_layout()
+        plt.show()
 
 if __name__ == '__main__':
     # construct the argument parser and parse the arguments
@@ -194,14 +106,14 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
     method = args['method'].upper()
     classNm = args['class']
-    path = args['path']
+    datasets_path = args['path']
 
-    if path:
-        if not os.path.exists(path):
-            print(path, ': does not exist') 
+    if datasets_path:
+        if not os.path.exists(datasets_path):
+            print(datasets_path, ': does not exist') 
             exit()
-        elif not os.path.isdir(path):
-            print(path, ': is not a directory') 
+        elif not os.path.isdir(datasets_path):
+            print(datasets_path, ': is not a directory') 
             exit()
     else:
         print('Please enter your datasets path') 
@@ -212,11 +124,9 @@ if __name__ == '__main__':
     else:
         number_of_element =  int(args['number'])
 
-    de = DataExplore(path, number_of_element)
+    de = DataExplore(datasets_path, number_of_element)
 
     if method == "SHOW_DATA":
         de.showData()
     elif method == "SHOW_CLASS":
         de.getClass()
-    elif method == "ANALYSIS_DATA":
-        de.analysisData(classNm)

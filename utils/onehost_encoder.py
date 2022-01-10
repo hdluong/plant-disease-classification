@@ -1,28 +1,30 @@
 import os
-import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 import argparse
-import numpy as np
-import matplotlib as plt
 
 from data_explore import DataExplore
 
 BASE_PATH = os.getcwd()
-DATASETS_PATH = BASE_PATH + '/datasets/train/Tomato___Early_blight/*.jpg'
+DATASETS_PATH = BASE_PATH + '/datasets'
 
-def encoder(datasets_path):
-    de = DataExplore(datasets_path, 10)
-    onehot = OneHotEncoder(sparse=False)
-    df_class = de.getClass(True)
-    onehot_encoded = onehot.fit_transform(df_class[["Class"]])
-    for o in onehot_encoded:
-        print(o)
-    return onehot, onehot_encoded
+class OneHotEncoderDecoder():
+    def __init__(self, datasets_path=DATASETS_PATH):
+        super(OneHotEncoderDecoder, self).__init__()
+        self.datasets_path = datasets_path
+        de = DataExplore(self.datasets_path)
+        df_class = de.getClass(True)
+        self.onehot = OneHotEncoder(sparse=False)
+        self.onehot_encoded = self.onehot.fit_transform(df_class[["Class"]])
 
-def decoder(onehot, onehot_encoded):
-    prediction_decoded = onehot.inverse_transform(onehot_encoded)
-    print(prediction_decoded)
-    return prediction_decoded
+    def encoder(self):
+        for o in self.onehot_encoded:
+            print(o)
+        return self.onehot_encoded
+
+    def decoder(self, onehot_encoded):
+        prediction_decoded = self.onehot.inverse_transform(onehot_encoded)
+        print(prediction_decoded)
+        return prediction_decoded
 
 if __name__ == '__main__':
     # construct the argument parser and parse the arguments
@@ -45,5 +47,6 @@ if __name__ == '__main__':
         exit()
 
     # test
-    onehot, onehot_encoded = encoder(path)
-    decoder(onehot, [onehot_encoded[4]])
+    labelEnCodeDecoder = OneHotEncoderDecoder(path)
+    onehot_encoded = labelEnCodeDecoder.encoder()
+    labelEnCodeDecoder.decoder([onehot_encoded[3]])
