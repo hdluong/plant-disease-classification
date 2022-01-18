@@ -1,6 +1,7 @@
 from nn.conv.simpleconvnet import SimpleNet
 from datasets.datasetloader import Dataset, Dataloader
 from preprocessing.simplepreprocessor import SimplePreprocessor
+from preprocessing.hsvsegmentpreprocessor import HsvSegmentPreprocessor
 from utils.onehot_encoder import OneHotEncoderDecoder
 from datasets.dataset_utils import *
 from sklearn.metrics import classification_report
@@ -36,10 +37,11 @@ with open(args["label_encode"], "wb") as f:
     f.close()
 
 sp = SimplePreprocessor(width, height)
+hsvSegment = HsvSegmentPreprocessor()
 
 # Build dataset
-train_dataset = Dataset(X_train, y_train, preprocessors=[sp])
-valid_dataset = Dataset(X_valid, y_valid, preprocessors=[sp])
+train_dataset = Dataset(X_train, y_train, preprocessors=[sp, hsvSegment])
+valid_dataset = Dataset(X_valid, y_valid, preprocessors=[sp, hsvSegment])
 
 # Loader
 train_loader = Dataloader(train_dataset, batch_size, len(train_dataset))
