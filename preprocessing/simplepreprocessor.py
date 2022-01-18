@@ -1,6 +1,4 @@
-# import necessary packages
-# 
-# 
+import cv2
 
 """
 Building an simple image preprocessor
@@ -8,19 +6,22 @@ ex: resize the image to a fixed size
 --
 """
 class SimplePreprocessor:
-    """
-    arguments:
-    width -- width of the image
-    height -- height of the image
-    --
-    --
-    """
+    
     def __init__(self, width, height):
-        pass
-
-    """
-    arguments:
-    image -- the source image, numpy array
-    """
+        """
+        arguments:
+        width -- width of the image
+        height -- height of the image
+        --
+        --
+        """
+        self.width = width
+        self.height = height
+    
     def preprocess(self, image):
-        pass
+        """
+        arguments:
+        image -- the source image, numpy array
+        """
+        image = cv2.resize(image, (self.width, self.height))
+        return image
