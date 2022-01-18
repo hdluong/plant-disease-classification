@@ -11,7 +11,7 @@ class OneHotEncoderDecoder():
         self.integer_encoded = integer_encoded.reshape(len(integer_encoded), 1)
         # binary encode
         onehot_encoder = OneHotEncoder(sparse=False)
-        self.onehot_encoded = self.onehot.fit_transform(self.integer_encoded)
+        self.onehot_encoded = onehot_encoder.fit_transform(self.integer_encoded)
 
     def encoder(self):
         for o in self.onehot_encoded:
