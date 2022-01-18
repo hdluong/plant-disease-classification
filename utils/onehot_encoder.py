@@ -1,30 +1,28 @@
-import os
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from numpy import argmax
 import argparse
-
-from data_explore import DataExplore
-
-BASE_PATH = os.getcwd()
-DATASETS_PATH = BASE_PATH + '/datasets'
+import os
 
 class OneHotEncoderDecoder():
-    def __init__(self, datasets_path=DATASETS_PATH):
-        super(OneHotEncoderDecoder, self).__init__()
-        self.datasets_path = datasets_path
-        de = DataExplore(self.datasets_path)
-        df_class = de.getClass(True)
-        self.onehot = OneHotEncoder(sparse=False)
-        self.onehot_encoded = self.onehot.fit_transform(df_class[["Class"]])
+    def __init__(self, labels):
+        # integer encode
+        self.label_encoder = LabelEncoder()
+        integer_encoded = self.label_encoder.fit_transform(labels)
+        self.integer_encoded = integer_encoded.reshape(len(integer_encoded), 1)
+        # binary encode
+        onehot_encoder = OneHotEncoder(sparse=False)
+        self.onehot_encoded = self.onehot.fit_transform(self.integer_encoded)
 
     def encoder(self):
         for o in self.onehot_encoded:
             print(o)
         return self.onehot_encoded
 
-    def decoder(self, onehot_encoded):
-        prediction_decoded = self.onehot.inverse_transform(onehot_encoded)
-        print(prediction_decoded)
-        return prediction_decoded
+    def decoder(self, preds):
+        prediction = argmax(preds)
+        inverted_prediction = self.label_encoder.inverse_transform([prediction])
+
+        return inverted_prediction
 
 if __name__ == '__main__':
     # construct the argument parser and parse the arguments
