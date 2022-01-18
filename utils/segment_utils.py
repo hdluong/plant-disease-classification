@@ -243,8 +243,14 @@ def segment_hsv(image_file):
     """
 
     original = read_image(image_file)
+    
+    result = segment_hsv(original)
+    
+    return original, result
+
+def segment_hsv(image):
     # create hsv
-    hsv = cv2.cvtColor(original, cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     # set lower and upper color limits
     low_val = (0,60,0)
     high_val = (179,255,255)
@@ -273,6 +279,6 @@ def segment_hsv(image_file):
     mask_out = mask + holes_mask
 
     # apply mask to original image
-    result = cv2.bitwise_and(original, original, mask=mask_out)
-    
-    return original, result
+    result = cv2.bitwise_and(image, image, mask=mask_out)
+
+    return result
