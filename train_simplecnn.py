@@ -53,7 +53,7 @@ model.summary()
 model.compile(optimizer = "Adam", loss = "categorical_crossentropy",  metrics = ["accuracy"])
 
 print("[INFO]: training network...")
-hist = model.fit_generator(train_loader, validation_data=valid_loader, epochs=num_epochs, verbose=1)
+hist = model.fit(train_loader, validation_data=valid_loader, epochs=num_epochs, verbose=1)
 #
 #
 print("[INFO] evaluating network...")
