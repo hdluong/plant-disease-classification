@@ -1,3 +1,4 @@
+# Stop training when a monitored metric has stopped improving.
 import os
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 from keras.callbacks import EarlyStopping

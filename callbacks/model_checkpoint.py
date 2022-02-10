@@ -1,3 +1,4 @@
+# Callback to save the Keras model or model weights at some frequency.
 from callbacks import *
 from keras.callbacks import ModelCheckpoint
 
@@ -5,7 +6,7 @@ def get_test_accuracy(model, x_test, y_test):
     test_loss, test_acc = model.evaluate(x=x_test, y=y_test, verbose=0)
     return test_acc
 
-checkpoint_path = 'callbacks/logs/model_checkpoints/'
+checkpoint_path = 'callbacks/model_checkpoints/'
 checkpoint = ModelCheckpoint(
     filepath=checkpoint_path,
     save_freq='epoch',
@@ -33,6 +34,6 @@ before = get_test_accuracy(new_model, X_test, y_test)
 print('accuracy (Without loading weight): {acc:0.3f}'.format(acc=before))
 
 # load weights
-new_model.load_weights('callbacks/logs/model_checkpoints/')
+new_model.load_weights(checkpoint_path)
 after = get_test_accuracy(new_model, X_test, y_test)
 print('accuracy (Load weights): {acc:0.3f}'.format(acc=after))

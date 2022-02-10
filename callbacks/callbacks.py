@@ -6,11 +6,9 @@ import matplotlib.pyplot as plt
 fashion_mnist = keras.datasets.fashion_mnist
 (X_train_full, y_train_full), (X_test, y_test) = fashion_mnist.load_data()
 X_train_full.shape
-(60000, 28, 28)
 X_train_full.dtype
 
-# For faster training, let's use a subset 10,000
-X_train, y_train = X_train_full[:10000] / 255.0, y_train_full[:10000]
+X_train, y_train, X_test  = X_train_full[:10000] / 255.0, y_train_full[:10000], X_test / 255.0
 
 def plot_metric(history, metric):
     train_metrics = history.history[metric]
@@ -24,6 +22,15 @@ def plot_metric(history, metric):
     plt.legend(["train_"+metric, 'val_'+metric])
     plt.show()
     
+def plot_lr(history):
+    learning_rate = history.history['lr']
+    epochs = range(1, len(learning_rate) + 1)
+    plt.plot(epochs, learning_rate)
+    plt.title('Learning rate')
+    plt.xlabel('Epochs')
+    plt.ylabel('Learning rate')
+    plt.show()
+
 def create_model(): 
     model = Sequential([
         Flatten(input_shape=(28, 28)),
