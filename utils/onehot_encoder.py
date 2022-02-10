@@ -4,12 +4,12 @@ import argparse
 import os
 import logging
 
-from set_logger import set_logger
+from utils.set_logger import set_logger
 
 class OneHotEncoderDecoder():
     def __init__(self, label):
         # Set the logger
-        set_logger('encode_decode_label.log')
+        set_logger('onehot_encoder.log')
         logging.info("encoding lablel...")
 
         # integer encode

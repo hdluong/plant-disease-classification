@@ -4,9 +4,11 @@ from preprocessing.simplepreprocessor import SimplePreprocessor
 from preprocessing.hsvsegmentpreprocessor import HsvSegmentPreprocessor
 from utils.onehot_encoder import OneHotEncoderDecoder
 from datasets.dataset_utils import *
+from utils.set_logger import set_logger
 from sklearn.metrics import classification_report
 import pickle
 import argparse
+import logging
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", required=True,
@@ -25,6 +27,8 @@ channels = 3
 batch_size = 32
 num_epochs = 20
 
+set_logger('train_simplecnn.log')
+
 X_train, y_train, X_valid, y_valid, classes = load_train_sets(train_path)
 # Convert training and validation labels to one hot matrices
 label_encoding = OneHotEncoderDecoder(y_train)
@@ -40,6 +44,7 @@ sp = SimplePreprocessor(width, height)
 hsvSegment = HsvSegmentPreprocessor()
 
 # Build dataset
+logging.info("Build dataset...")
 train_dataset = Dataset(X_train, y_train, preprocessors=[sp, hsvSegment])
 valid_dataset = Dataset(X_valid, y_valid, preprocessors=[sp, hsvSegment])
 
@@ -52,10 +57,12 @@ model = SimpleNet.create(width, height, channels, classes)
 model.summary()
 model.compile(optimizer = "Adam", loss = "categorical_crossentropy",  metrics = ["accuracy"])
 
-print("[INFO]: training network...")
+# print("[INFO]: training network...")
+logging.info("training network...")
 hist = model.fit(train_loader, validation_data=valid_loader, epochs=num_epochs, verbose=1)
 #
 #
-print("[INFO] evaluating network...")
+# print("[INFO] evaluating network...")
+logging.info("evaluating network...")
 #
 #
