@@ -4,7 +4,7 @@ import argparse
 import os
 import logging
 
-from set_logger import set_logger
+from utils.set_logger import set_logger
 
 class OneHotEncoderDecoder():
     def __init__(self, label):
