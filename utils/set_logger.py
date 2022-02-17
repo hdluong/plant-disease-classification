@@ -15,7 +15,7 @@ def set_logger(log_path):
     Args:
         log_path: (string) where to log
     """
-    LOG_DIR_PATH = os.path.join(os.path.abspath(os.curdir), 'log')
+    LOG_DIR_PATH = os.path.join(os.path.abspath(os.curdir))
     if not os.path.isdir(LOG_DIR_PATH):
         os.makedirs(LOG_DIR_PATH)
         print("created folder : ", LOG_DIR_PATH)

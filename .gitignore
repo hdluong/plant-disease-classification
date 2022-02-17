@@ -1,0 +1,3 @@
+datasets/data/tomato-diseases
+__pycache__/
+experiments/test/ckpt
