@@ -63,14 +63,16 @@ hsvSegment = HsvSegmentPreprocessor()
 
 # Build dataset
 logging.info("Build dataset...")
-#train_dataset = Dataset(X_train, y_train, preprocessors=[sp, hsvSegment])
-#valid_dataset = Dataset(X_valid, y_valid, preprocessors=[sp, hsvSegment])
-train_dataset = Dataset(X_train, y_train)
-valid_dataset = Dataset(X_valid, y_valid)
+train_dataset = Dataset(X_train, y_train, preprocessors=[sp, hsvSegment])
+valid_dataset = Dataset(X_valid, y_valid, preprocessors=[sp, hsvSegment])
+test_dataset = Dataset(X_test, y_test, preprocessors=[sp, hsvSegment])
+#train_dataset = Dataset(X_train, y_train)
+#valid_dataset = Dataset(X_valid, y_valid)
 
 # Loader
 train_loader = Dataloader(train_dataset, batch_size, len(train_dataset))
 valid_loader = Dataloader(valid_dataset, batch_size, len(valid_dataset))
+test_loader = Dataloader(test_dataset, batch_size, len(test_dataset))
 
 # model
 model = SimpleNet.create(width, height, channels, classes)
@@ -92,5 +94,5 @@ hist = model.fit(train_loader, validation_data=valid_loader, epochs=num_epochs, 
 plot_metric(hist, "loss")
 #
 logging.info("Evaluating network...")
-results = model.evaluate(X_test, y_test, batch_size=128)
+results = model.evaluate(test_loader)
 print("test loss, test acc:", results)
