@@ -29,7 +29,7 @@ def make_image_and_label_list(folder_dir, file_type):
 # convert image to numpy array
 def convert_image_to_numpy(image_path, image_height, image_width):
     # load the image
-    image = Image.open(image_path).resize((200,200))
+    image = Image.open(image_path).resize((image_height,image_width))
     # convert image to numpy array
     data = asarray(image)
     # summarize shape
