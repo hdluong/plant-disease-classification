@@ -48,14 +48,14 @@ if __name__ == '__main__':
     n_train_steps = train_generator.n//train_generator.batch_size
     n_valid_steps = valid_generator.n//valid_generator.batch_size
 
-    # Define the model
-    logging.info("Creating the model...")
     # Reload model from directory if specified
     if args["restore_from"] is not None:
         logging.info("Restoring parameters from {}".format(args["restore_from"]))
         if os.path.isdir(args["restore_from"]):
             model = keras.models.load_model(args["restore_from"])
     else:
+        # Define the model
+        logging.info("Creating the model...")
         model, _ = DenseNet.create(params.image_size, params.image_size)
 
     model.summary()

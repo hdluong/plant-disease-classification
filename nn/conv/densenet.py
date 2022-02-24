@@ -21,7 +21,7 @@ class DenseNet:
         x = Dense(128,activation = "relu")(x)
         x = Dropout(0.2)(x)
 
-        image_output = Dense(10,activation="softmax")(x)
+        image_output = Dense(classes,activation="softmax")(x)
         model = Model(image_input,image_output)
 
         return model, base_model
