@@ -26,17 +26,17 @@ parser.add_argument('--restore_from', default=None,
 
 if __name__ == '__main__':
     # Load the parameters from json file
-    args = parser.parse_args()
-    json_path = os.path.join(args.model_dir, 'params.json')
+    args = vars(parser.parse_args())
+    json_path = os.path.join(args["model_dir"], 'params.json')
     assert os.path.isfile(json_path), "No json configuration file found at {}".format(json_path)
     params = Params(json_path)
 
     # Set the logger
-    set_logger(os.path.join(args.model_dir, 'train.log'))
+    set_logger(os.path.join(args["model_dir"], 'train.log'))
 
     # Create the input data pipeline
     logging.info("Creating the datasets...")
-    data_dir = args.data_dir
+    data_dir = args["data_dir"]
     train_data_dir = os.path.join(data_dir, "train")
     dev_data_dir = os.path.join(data_dir, "dev")
     test_data_dir = os.path.join(data_dir, "test")
