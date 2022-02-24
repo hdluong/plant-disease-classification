@@ -8,9 +8,11 @@ img_height = 200
 img_width = 200
 epochs = 3
 
+
 list_ds = tf.data.Dataset.list_files(str(data_dir + '\\*\\*'), shuffle=False)
 # get the count of image files in the train directory
 image_count = 0
+
 
 for dir1 in os.listdir(data_dir):
     for files in os.listdir(os.path.join(data_dir, dir1)):
@@ -20,13 +22,14 @@ list_ds = list_ds.shuffle(image_count, reshuffle_each_iteration=False)
 
 class_names = np.array(sorted([dir1 for dir1 in os.listdir(data_dir)]))
 
+
+# The validation dataset is 20% of the total dataset, and train dataset is 80% of the entire dataset
 val_size = int(image_count * 0.2)
 train_ds = list_ds.skip(val_size)
 val_ds = list_ds.take(val_size)
 
+
 #To process the label
-
-
 def get_label(file_path):
   # convert the path to a list of path components separated by sep
   parts = tf.strings.split(file_path, os.path.sep)
@@ -36,9 +39,8 @@ def get_label(file_path):
   # Integer encode the label
   return tf.argmax(tf.cast(one_hot, tf.int32))
 
+
 # To process the image
-
-
 def decode_img(img):
   # convert the compressed string to a 3D uint8 tensor
   img = tf.image.decode_jpeg(img, channels=3)
@@ -46,9 +48,8 @@ def decode_img(img):
   # resize the image to the desired size
   return tf.image.resize(img, [img_height, img_width])
 
+
 # To create the single training of validation example with image and its corresponding label
-
-
 def process_path(file_path):
   label = get_label(file_path)
   # load the raw data from the file as a string
@@ -87,9 +88,11 @@ model = tf.keras.Sequential(
         tf.keras.layers.Dense(6)
     ])
 
+
 #Compile the model
 model.compile(optimizer='rmsprop',
               loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
 
 #Fitting the model
 history = model.fit(train_ds, validation_data=val_ds, epochs=epochs)
