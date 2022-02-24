@@ -13,25 +13,29 @@ def prepare_model(height, width):
     return model
 
 def data_generator_type_1():
+    # train_datagen = ImageDataGenerator(
+    #     rescale=1 / 255.0,
+    #     rotation_range=20,
+    #     zoom_range=0.05,
+    #     width_shift_range=0.05,
+    #     height_shift_range=0.05,
+    #     shear_range=0.05,
+    #     horizontal_flip=True,
+    #     fill_mode="nearest",
+    #     validation_split=0.20)
     train_datagen = ImageDataGenerator(
-        rescale=1 / 255.0,
-        rotation_range=20,
-        zoom_range=0.05,
-        width_shift_range=0.05,
-        height_shift_range=0.05,
-        shear_range=0.05,
-        horizontal_flip=True,
-        fill_mode="nearest",
-        validation_split=0.20)
+        rescale = 1./255,
+        shear_range = 0.2,
+        zoom_range = 0.2,
+        rotation_range = 20,
+        horizontal_flip = True)
+
     return train_datagen
 
-def preprocessing(src_path_train, src_path_test, height, width, batch_size, seed):
+def preprocessing(src_path_train, src_path_valid, src_path_test, height, width, batch_size, seed):
     train_datagen = data_generator_type_1()
 
     test_datagen = ImageDataGenerator(rescale=1 / 255.0)
-
-    height = 100
-    width = 100
 
     # Training data
     train_generator = train_datagen.flow_from_directory(
@@ -40,19 +44,17 @@ def preprocessing(src_path_train, src_path_test, height, width, batch_size, seed
         color_mode="rgb",
         batch_size=batch_size,
         class_mode="categorical",
-        subset='training',
         shuffle=True,
         seed=seed
     )
 
     # Validation data
     valid_generator = train_datagen.flow_from_directory(
-        directory=src_path_train,
+        directory=src_path_valid,
         target_size=(height, width),
         color_mode="rgb",
         batch_size=batch_size,
         class_mode="categorical",
-        subset='validation',
         shuffle=True,
         seed=seed
     )
