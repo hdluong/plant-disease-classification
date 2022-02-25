@@ -3,5 +3,5 @@
     "batch_size": 64,
     "num_epochs": 5,
     "num_channels": 3,
-    "image_size": 224
+    "image_size": 100
 }
