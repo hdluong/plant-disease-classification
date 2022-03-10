@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+	<form class="form-signin" method=post enctype=multipart/form-data>
+		<h1 class="h2 mb-3 font-weight-normal">Tomato Leaf Disease Classifier</h1>
+		<h2 class="h5 mb-3 font-weight-normal" style="text-align: left;">Please Upload The Image</h2>
+		<input type="file" name="file" class="form-control-file" id="inputfile"  onchange="preview_image(event)">
+		<br />
+		<img id="output-image" class="rounded mx-auto d-block"/>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+
+		{% if image_upload %}
+			<div style="padding-top: 5px;">
+				<h5 style="text-align: left;">Uploaded Image:</h5>
+				<img id="uploaded-image" class="rounded mx-auto d-block" src="{{ url_for('static',filename='uploads/' + image_upload)}}" alt="Uploaded image" style="max-width:300px;" />
+			</div>
+		{% endif %}
+
+		{% if name %}
+			<div class="result" style="border: 1px #747479 solid; margin-top: 5px; padding: 10px;">
+					{% if name == "healthy"%}
+						<p class="h5 mb-3 font-weight-normal"> Your plant is healthy! </p>
+					{% else %}
+						<p class="h5 mb-3 font-weight-normal"> Your leaf got a {{ name }} disease!</p>
+					{% endif %}
+			</div>
+		{% endif %}
+
+
+		<p class="mt-5 mb-3 text-muted">&copy ML研修チーム</p>
+		<div class="row"></div>
+	</form>
+	
+
+	<script type="text/javascript">
+		function preview_image(event) {
+			var reader = new FileReader();
+			reader.onload = function(){
+				var output = document.getElementById('output-image')
+				output.src = reader.result;
+			}
+			reader.readAsDataURL(event.target.files[0]);
+		}
+	</script>
+{% endblock %}
